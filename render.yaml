@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: v-agent-builder
+    runtime: node
+    plan: free
+    buildCommand: node scripts/unpack-source.mjs && npm ci --prefix mobile && npm run build:web && npm ci --prefix server --omit=dev
+    startCommand: node server/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24.21.0"
+      - key: NODE_ENV
+        value: production
+      - key: PGSSLMODE
+        value: require
+      - key: DATABASE_URL
+        sync: false
+      - key: APP_ENCRYPTION_KEY
+        generateValue: true
